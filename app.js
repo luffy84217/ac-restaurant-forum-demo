@@ -16,19 +16,19 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(session({ secret: 'secret', resave: false, saveUninitialized: false }))
 app.use(flash())
 
-app.use((req, res, next) => {
-  res.locals.success_messages = req.flash('success_messages')
-  res.locals.error_messages = req.flash('error_messages')
-  res.locals.user = req.user
-  next()
-})
-
 app.use(passport.initialize())
 app.use(passport.session())
 
 app.use(methodOverride('_method'))
 
 app.use('/upload', express.static(__dirname + '/upload'))
+
+app.use((req, res, next) => {
+  res.locals.success_messages = req.flash('success_messages')
+  res.locals.error_messages = req.flash('error_messages')
+  res.locals.user = req.user
+  next()
+})
 
 app.listen(port, () => {
  db.sequelize.sync() // 跟資料庫同步
