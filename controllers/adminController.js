@@ -2,22 +2,28 @@ const fs = require('fs')
 const db = require('../models') 
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = '03281f5f7c443f8'
+const Category = db.Category
 const Restaurant = db.Restaurant
 const User = db.User
 
 const adminController = {
   getRestaurants: (req, res) => {
-    return Restaurant.findAll().then(restaurants => {
+    return Restaurant.findAll({include: [Category]}).then(restaurants => {
+      console.log(restaurants)
       return res.render('admin/restaurants', {restaurants: restaurants })
     })
   },
 
   createRestaurant: (req, res) => {
-    return res.render('admin/create')
+    Category.findAll().then(categories => {
+      return res.render('admin/create', {
+        categories: categories
+      })
+    })
   },
 
   getRestaurant: (req, res) => {
-    return Restaurant.findByPk(req.params.id).then(restaurant => {
+    return Restaurant.findByPk(req.params.id, {include: [Category]}).then(restaurant => {
       return res.render('admin/restaurant', {
         restaurant: restaurant
       })
@@ -41,6 +47,7 @@ const adminController = {
           opening_hours: req.body.opening_hours,
           description: req.body.description,
           image: file ? img.data.link : null,
+          CategoryId: req.body.categoryId
         }).then((restaurant) => {
           req.flash('success_messages', 'restaurant was successfully created')
           return res.redirect('/admin/restaurants')
@@ -64,7 +71,12 @@ const adminController = {
 
   editRestaurant: (req, res) => {
     return Restaurant.findByPk(req.params.id).then(restaurant => {
-      return res.render('admin/create', { restaurant: restaurant } )
+      Category.findAll().then(categories => {
+        return res.render('admin/create', {
+          categories: categories,
+          restaurant: restaurant
+        })
+      })
     })
   },
 
@@ -87,6 +99,7 @@ const adminController = {
               opening_hours: req.body.opening_hours,
               description: req.body.description,
               image: file ? img.data.link : restaurant.image,
+              CategoryId: req.body.categoryId
             })
             .then((restaurant) => {
               req.flash('success_messages', 'restaurant was successfully to update')
