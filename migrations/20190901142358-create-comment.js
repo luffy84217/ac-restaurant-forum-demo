@@ -12,7 +12,8 @@ module.exports = {
         type: Sequelize.STRING
       },
       UserId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        primaryKey: true
       },
       RestaurantId: {
         type: Sequelize.INTEGER

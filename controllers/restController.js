@@ -44,8 +44,11 @@ let restController = {
   },
 
   getRestaurant: (req, res) => {
-    return Restaurant.findByPk(req.params.id, { model: Comment, include: [User] })
-      .then(restaurant => {
+    return Restaurant.findByPk(req.params.id, {
+      include: [
+        Category,
+        { model: Comment, include: [User] }
+      ]}).then(restaurant => {
         return res.render('restaurant', {
           restaurant: restaurant
         })
