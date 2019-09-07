@@ -49,6 +49,11 @@ let restController = {
         Category,
         { model: Comment, include: [User] }
       ]}).then(restaurant => {
+        let viewCounts = restaurant.viewCounts + 1
+
+        restaurant.update({
+          viewCounts
+        })
         return res.render('restaurant', {
           restaurant: restaurant
         })
@@ -70,6 +75,19 @@ let restController = {
           restaurants: restaurants,
           comments: comments
         })
+      })
+    })
+  },
+
+  getDashboard: (req, res) => {
+    return Restaurant.findByPk(req.params.id, {
+      include: [
+        Category,
+        { model: Comment, include: [User] }
+      ]
+    }).then(restaurant => {
+      return res.render('dashboard', {
+        restaurant: restaurant
       })
     })
   }
