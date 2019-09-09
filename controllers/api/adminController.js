@@ -9,6 +9,12 @@ const adminController = {
     adminService.getRestaurants(req, res, (data) => {
       return res.render('admin/restaurants', data)
     })
+  },
+
+  getRestaurant: (req, res) => {
+      adminService.getRestaurant(req, res, (data) => {
+          return res.render('admin/restaurant', data)
+      })
   }
 }
 module.exports = adminController
